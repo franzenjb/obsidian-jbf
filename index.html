@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<title>Obsidian + Claude Code — Daily Rhythm</title>
+<meta name="description" content="The two slash commands and the Obsidian CLI reference. A cheat sheet for working with Obsidian and Claude Code." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='52' font-size='52'%3E%F0%9F%93%93%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --panel: #ffffff;
+    --ink: #1d1d1f;
+    --ink-soft: #4b4b54;
+    --muted: #8b8b94;
+    --line: #e6e4de;
+    --accent: #6d4aff;
+    --accent-soft: #efeaff;
+    --ok: #127a32;
+    --warn: #8a5a00;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16161a;
+      --panel: #1e1e24;
+      --ink: #eceaf0;
+      --ink-soft: #c6c4cc;
+      --muted: #8a8894;
+      --line: #2b2b33;
+      --accent: #a28bff;
+      --accent-soft: #2a2140;
+      --ok: #5cd382;
+      --warn: #e0b96a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 48px 22px 96px;
+  }
+  header.hero {
+    margin-bottom: 28px;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(30px, 4.5vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    margin: 14px 0 10px;
+    font-weight: 700;
+  }
+  .lede {
+    color: var(--ink-soft);
+    font-size: 17px;
+    max-width: 640px;
+    margin: 0;
+  }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin: 20px 0;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+  }
+  h2 {
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+    font-weight: 650;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+  h3 {
+    font-size: 16px;
+    margin: 22px 0 8px;
+    font-weight: 650;
+  }
+  p { margin: 0 0 12px; color: var(--ink-soft); }
+  .cmd-card {
+    display: flex;
+    gap: 16px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin: 12px 0;
+    background: var(--bg);
+    align-items: flex-start;
+  }
+  .cmd-card .icon { font-size: 22px; line-height: 1; padding-top: 1px; }
+  .cmd-card .body { flex: 1; min-width: 0; }
+  .cmd-card code.slash {
+    display: inline-block;
+    font: 600 14px/1 var(--mono);
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+  }
+  .cmd-card .what { font-weight: 600; color: var(--ink); }
+  .cmd-card .body p { margin: 4px 0 0; font-size: 14.5px; }
+  ul { padding-left: 20px; margin: 8px 0 12px; color: var(--ink-soft); }
+  ul li { margin: 4px 0; }
+  ul li code { color: var(--ink); }
+  code, kbd {
+    font: 13.5px/1.4 var(--mono);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: 5px;
+    color: var(--ink);
+  }
+  pre {
+    font: 13px/1.5 var(--mono);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin: 10px 0 14px;
+    color: var(--ink);
+  }
+  pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0 14px;
+    font-size: 14.5px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 650;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  td:first-child { white-space: nowrap; }
+  td code { white-space: nowrap; font-size: 13px; }
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--line);
+    color: var(--ink);
+  }
+  .checklist li:last-child { border: none; }
+  .checklist li::before {
+    content: "☐";
+    margin-right: 10px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .callout {
+    padding: 14px 16px;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 6px;
+    margin: 14px 0;
+    color: var(--ink);
+    font-size: 14.5px;
+  }
+  .callout.warn {
+    border-left-color: var(--warn);
+    background: color-mix(in srgb, var(--warn) 14%, transparent);
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 680px) {
+    .two-col { grid-template-columns: 1fr; }
+    section { padding: 22px 18px; }
+    .wrap { padding: 32px 16px 64px; }
+  }
+  footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+  }
+  footer a { color: var(--muted); }
+  .kbd-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .kbd-row kbd {
+    background: var(--panel);
+    font-size: 12.5px;
+    padding: 3px 7px;
+  }
+  a { color: var(--accent); }
+  a:hover { text-decoration: underline; }
+  .rule-label { font-weight: 650; color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Daily Rhythm</span>
+    <h1>Obsidian + Claude Code</h1>
+    <p class="lede">The two slash commands and the CLI you actually need. Pull this up when you forget what to type.</p>
+  </header>
+
+  <section>
+    <h2>Two Slash Commands <span class="tag">Use every day</span></h2>
+
+    <div class="cmd-card">
+      <div class="icon">🌅</div>
+      <div class="body">
+        <code class="slash">/morning</code>
+        <div class="what">Start of day — generate the briefing</div>
+        <p>Writes <code>daily/morning-briefing.md</code> with yesterday's unchecked tasks, an active-projects table, overnight items, blockers, and coverage gaps (repos pushed recently with no project note).</p>
+      </div>
+    </div>
+
+    <div class="cmd-card">
+      <div class="icon">🌙</div>
+      <div class="body">
+        <code class="slash">/wrap</code>
+        <div class="what">End of day — update project notes + daily wrap</div>
+        <p>Walks the session, updates (or creates) a <code>projects/&lt;name&gt;.md</code> note for each project touched, then writes <code>daily/YYYY-MM-DD-wrap.md</code> — summary, projects touched, overnight items, tomorrow's priority.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <span class="rule-label">If you created a repo, deployed, or added a domain today,</span> also run <code>bash ~/dev/update-projects.sh</code>. <code>/wrap</code> updates notes; the shell script refreshes the project registry. They're separate.
+    </div>
+  </section>
+
+  <section>
+    <h2>Obsidian CLI — the 15 that matter</h2>
+    <p><span class="rule-label">Rule:</span> CLI for writes, MCP for reads. Obsidian must be open.</p>
+
+    <table>
+      <thead><tr><th>Command</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td><code>obsidian read path="folder/note.md"</code></td><td>Read a note</td></tr>
+        <tr><td><code>obsidian create path="folder/name" silent overwrite content="..."</code></td><td>Create a note (no <code>.md</code> on create)</td></tr>
+        <tr><td><code>obsidian append path="folder/name.md" content="..."</code></td><td>Append a line</td></tr>
+        <tr><td><code>obsidian search query="term" limit=10</code></td><td>Full-text vault search</td></tr>
+        <tr><td><code>obsidian search:context query="term"</code></td><td>Search with surrounding context</td></tr>
+        <tr><td><code>obsidian daily:read</code></td><td>Read today's daily note</td></tr>
+        <tr><td><code>obsidian daily:append content="- [ ] task"</code></td><td>Add a task to today</td></tr>
+        <tr><td><code>obsidian tasks todo</code></td><td>List open tasks across vault</td></tr>
+        <tr><td><code>obsidian tasks done</code></td><td>List completed tasks</td></tr>
+        <tr><td><code>obsidian property:set name="status" value="active" file="Foo"</code></td><td>Set a frontmatter property</td></tr>
+        <tr><td><code>obsidian property:get name="status" file="Foo"</code></td><td>Read a property</td></tr>
+        <tr><td><code>obsidian backlinks file="Foo"</code></td><td>What links to this note</td></tr>
+        <tr><td><code>obsidian tags counts sort=count</code></td><td>Tag cloud by frequency</td></tr>
+        <tr><td><code>obsidian base:query file="projects-dashboard" view="Active"</code></td><td>Query a Base / dashboard</td></tr>
+        <tr><td><code>obsidian help</code></td><td>Full reference — always current</td></tr>
+      </tbody>
+    </table>
+
+    <div class="two-col">
+      <div>
+        <h3>File targeting</h3>
+        <ul>
+          <li><code>file=&lt;name&gt;</code> — wikilink-style (just the name)</li>
+          <li><code>path=&lt;path&gt;</code> — exact path from vault root</li>
+          <li>Omit both → targets the active file</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Useful flags</h3>
+        <ul>
+          <li><code>silent</code> — create without opening</li>
+          <li><code>overwrite</code> — allow replacing an existing file</li>
+          <li><code>--copy</code> — pipe output to clipboard</li>
+          <li><code>total</code> — return count instead of list</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Frontmatter Contract</h2>
+    <p>Every note carries YAML frontmatter. Minimum:</p>
+<pre><code>---
+title: Note Title
+date: 2026-04-17
+status: active | archived | pending | solved | someday
+tags: [topic1, topic2]
+---</code></pre>
+    <p>Use <code>[[wikilinks]]</code> to connect related notes. Patch existing frontmatter with <code>obsidian property:set</code>.</p>
+  </section>
+
+  <section>
+    <h2>Checklists</h2>
+    <div class="two-col">
+      <div>
+        <h3>Start of day</h3>
+        <ul class="checklist">
+          <li>Open Obsidian</li>
+          <li>Run <code>/morning</code></li>
+          <li>Open <code>daily/morning-briefing.md</code></li>
+        </ul>
+      </div>
+      <div>
+        <h3>End of day</h3>
+        <ul class="checklist">
+          <li>Run <code>/wrap</code></li>
+          <li>Run <code>update-projects.sh</code> — only if new repo / deploy / domain</li>
+          <li>Leave Obsidian open overnight</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Keyboard Shortcuts Worth Knowing</h2>
+    <div class="kbd-row"><kbd>⌘ N</kbd><span>new note</span></div>
+    <div class="kbd-row"><kbd>⌘ O</kbd><span>quick switcher</span></div>
+    <div class="kbd-row"><kbd>⌘ ⇧ F</kbd><span>search vault contents</span></div>
+    <div class="kbd-row"><kbd>⌘ E</kbd><span>toggle edit / reading</span></div>
+    <div class="kbd-row"><kbd>⌘ P</kbd><span>command palette</span></div>
+    <div class="kbd-row"><kbd>[[</kbd><span>start a link</span></div>
+  </section>
+
+  <footer>
+    <p>Personal reference — Obsidian commands &amp; daily rhythm.<br />
+    Built with Claude Code. <a href="https://help.obsidian.md/cli">Full CLI docs</a>.</p>
+  </footer>
+
+</div>
+</body>
+</html>
